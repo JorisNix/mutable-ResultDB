@@ -1,0 +1,35 @@
+networks:
+  local:
+
+services:
+  mutable:
+    image: mutable
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mutable
+    environment:
+      - PGHOST=postgres
+      - PGUSER=postgres
+      - PGPASSWORD=123
+      - PGDATABASE=postgres
+    networks:
+      - local
+    ports:
+      - "8888:8888"
+    volumes:
+      - ${PWD}/mutable_fork_resultdb/benchmark:/mutable_fork_resultdb/benchmark
+    stdin_open: true
+    tty: true
+
+  postgres:
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: postgres
+    container_name: postgres
+    networks:
+      - local
+    volumes:
+      - ${PWD}/data:/var/lib/postgresql/data
